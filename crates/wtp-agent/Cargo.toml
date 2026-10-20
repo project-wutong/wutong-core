@@ -1,0 +1,15 @@
+[package]
+name = "wtp-agent"
+description = "Wutong Protocol Agent profile: Task state machine with version, lease and idempotency guards"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[dependencies]
+wtp-types.workspace = true
+
+[lints]
+workspace = true
