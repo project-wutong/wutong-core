@@ -1,0 +1,24 @@
+[package]
+name = "wtp-wire"
+description = "Wutong Protocol wire layer: strict JSON parser, restricted RFC 8785 JCS, RFC 8949 dCBOR, schema validation"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[features]
+default = ["schema"]
+## Validate envelopes against the bundled normative JSON Schema (Draft 2020-12).
+schema = ["dep:jsonschema"]
+
+[dependencies]
+wtp-types.workspace = true
+serde_json.workspace = true
+sha2.workspace = true
+hex.workspace = true
+jsonschema = { workspace = true, optional = true }
+
+[lints]
+workspace = true

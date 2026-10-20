@@ -1,0 +1,4552 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:wutong:schema:core:0.1.2",
+  "$comment": "Server-independent URN schema identifier for Wutong Protocol v0.1.2 Formal Release.",
+  "title": "Wutong Protocol v0.1.2 Normative Wire Schema (24 Message Kinds)",
+  "description": "Syntactic contract for all 24 Wutong Protocol v0.1.2 message kinds across Core, Document, Agent, Security, Sync, Federation, Service, and Interop profiles.",
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "protocol": {
+          "const": "wutong/0.1"
+        },
+        "kind": {
+          "const": "wutong.principal"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "occurred_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "principal_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "principal_type": {
+              "enum": [
+                "human",
+                "organization",
+                "agent",
+                "service",
+                "device"
+              ]
+            },
+            "display_name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "x": {
+              "type": "object",
+              "propertyNames": {
+                "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+              },
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "principal_id",
+            "principal_type"
+          ]
+        },
+        "extensions": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+          },
+          "additionalProperties": true
+        },
+        "critical": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$",
+            "minLength": 3,
+            "maxLength": 128
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 32
+        },
+        "auth": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "signer_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "key_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "issued_at": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+            },
+            "nonce": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            }
+          },
+          "required": [
+            "signer_id",
+            "key_id",
+            "issued_at",
+            "nonce"
+          ]
+        },
+        "proof": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "alg": {
+              "const": "Ed25519"
+            },
+            "sig": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{86}$"
+            },
+            "encoding": {
+              "enum": [
+                "jcs",
+                "dcbor"
+              ]
+            }
+          },
+          "required": [
+            "alg",
+            "sig"
+          ]
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "id",
+        "occurred_at",
+        "payload"
+      ],
+      "dependentRequired": {
+        "auth": [
+          "proof"
+        ],
+        "proof": [
+          "auth"
+        ],
+        "critical": [
+          "extensions"
+        ]
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "protocol": {
+          "const": "wutong/0.1"
+        },
+        "kind": {
+          "const": "wutong.key_binding"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "occurred_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "binding_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "principal_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "key_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "alg": {
+              "enum": [
+                "Ed25519",
+                "X25519"
+              ]
+            },
+            "public_key": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "purposes": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "signing",
+                  "delegation",
+                  "authentication",
+                  "assertion",
+                  "encryption"
+                ]
+              },
+              "uniqueItems": true,
+              "minItems": 1,
+              "maxItems": 4
+            },
+            "valid_from": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+            },
+            "valid_until": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+            },
+            "previous_key_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "authority_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "x": {
+              "type": "object",
+              "propertyNames": {
+                "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+              },
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "binding_id",
+            "principal_id",
+            "key_id",
+            "alg",
+            "public_key",
+            "purposes",
+            "valid_from",
+            "valid_until"
+          ],
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "alg": {
+                    "const": "X25519"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "purposes": {
+                    "type": "array",
+                    "items": {
+                      "const": "encryption"
+                    },
+                    "minItems": 1,
+                    "maxItems": 1
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "alg": {
+                    "const": "Ed25519"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "purposes": {
+                    "type": "array",
+                    "items": {
+                      "enum": [
+                        "signing",
+                        "delegation",
+                        "authentication",
+                        "assertion"
+                      ]
+                    },
+                    "minItems": 1
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "extensions": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+          },
+          "additionalProperties": true
+        },
+        "critical": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$",
+            "minLength": 3,
+            "maxLength": 128
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 32
+        },
+        "auth": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "signer_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "key_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "issued_at": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+            },
+            "nonce": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            }
+          },
+          "required": [
+            "signer_id",
+            "key_id",
+            "issued_at",
+            "nonce"
+          ]
+        },
+        "proof": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "alg": {
+              "const": "Ed25519"
+            },
+            "sig": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{86}$"
+            },
+            "encoding": {
+              "enum": [
+                "jcs",
+                "dcbor"
+              ]
+            }
+          },
+          "required": [
+            "alg",
+            "sig"
+          ]
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "id",
+        "occurred_at",
+        "payload"
+      ],
+      "dependentRequired": {
+        "auth": [
+          "proof"
+        ],
+        "proof": [
+          "auth"
+        ],
+        "critical": [
+          "extensions"
+        ]
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "protocol": {
+          "const": "wutong/0.1"
+        },
+        "kind": {
+          "const": "wutong.revocation"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "occurred_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "revocation_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "issuer_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "target_kind": {
+              "enum": [
+                "key_binding",
+                "capability",
+                "publication",
+                "artifact"
+              ]
+            },
+            "target_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "revoked_at": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+            },
+            "effective_from": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+            },
+            "reason": {
+              "enum": [
+                "compromised",
+                "superseded",
+                "affiliation_change",
+                "policy_violation",
+                "withdrawn"
+              ]
+            },
+            "x": {
+              "type": "object",
+              "propertyNames": {
+                "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+              },
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "revocation_id",
+            "issuer_id",
+            "target_kind",
+            "target_id",
+            "revoked_at",
+            "effective_from",
+            "reason"
+          ]
+        },
+        "extensions": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+          },
+          "additionalProperties": true
+        },
+        "critical": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$",
+            "minLength": 3,
+            "maxLength": 128
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 32
+        },
+        "auth": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "signer_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "key_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "issued_at": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+            },
+            "nonce": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            }
+          },
+          "required": [
+            "signer_id",
+            "key_id",
+            "issued_at",
+            "nonce"
+          ]
+        },
+        "proof": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "alg": {
+              "const": "Ed25519"
+            },
+            "sig": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{86}$"
+            },
+            "encoding": {
+              "enum": [
+                "jcs",
+                "dcbor"
+              ]
+            }
+          },
+          "required": [
+            "alg",
+            "sig"
+          ]
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "id",
+        "occurred_at",
+        "payload"
+      ],
+      "dependentRequired": {
+        "auth": [
+          "proof"
+        ],
+        "proof": [
+          "auth"
+        ],
+        "critical": [
+          "extensions"
+        ]
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "protocol": {
+          "const": "wutong/0.1"
+        },
+        "kind": {
+          "const": "wutong.space"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "occurred_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "space_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "owner_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "visibility": {
+              "enum": [
+                "local",
+                "private",
+                "shared",
+                "public"
+              ]
+            },
+            "x": {
+              "type": "object",
+              "propertyNames": {
+                "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+              },
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "space_id",
+            "owner_id",
+            "name",
+            "visibility"
+          ]
+        },
+        "extensions": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+          },
+          "additionalProperties": true
+        },
+        "critical": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$",
+            "minLength": 3,
+            "maxLength": 128
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 32
+        },
+        "auth": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "signer_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "key_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "issued_at": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+            },
+            "nonce": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            }
+          },
+          "required": [
+            "signer_id",
+            "key_id",
+            "issued_at",
+            "nonce"
+          ]
+        },
+        "proof": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "alg": {
+              "const": "Ed25519"
+            },
+            "sig": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{86}$"
+            },
+            "encoding": {
+              "enum": [
+                "jcs",
+                "dcbor"
+              ]
+            }
+          },
+          "required": [
+            "alg",
+            "sig"
+          ]
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "id",
+        "occurred_at",
+        "payload"
+      ],
+      "dependentRequired": {
+        "auth": [
+          "proof"
+        ],
+        "proof": [
+          "auth"
+        ],
+        "critical": [
+          "extensions"
+        ]
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "protocol": {
+          "const": "wutong/0.1"
+        },
+        "kind": {
+          "const": "wutong.space_epoch"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "occurred_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "epoch_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "space_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "epoch": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "key_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "issuer_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "sender_ephemeral_pub": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "space_x25519_pub": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "previous_epoch_digest": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            "member_wraps": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "member_id": {
+                    "type": "string",
+                    "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                  },
+                  "member_key_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "nonce_b64u": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9_-]{16}$"
+                  },
+                  "wrapped_key_b64u": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9_-]+$",
+                    "minLength": 1,
+                    "maxLength": 1048576
+                  }
+                },
+                "required": [
+                  "member_id",
+                  "member_key_id",
+                  "nonce_b64u",
+                  "wrapped_key_b64u"
+                ]
+              },
+              "minItems": 1,
+              "maxItems": 1024
+            },
+            "x": {
+              "type": "object",
+              "propertyNames": {
+                "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+              },
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "epoch_id",
+            "space_id",
+            "epoch",
+            "key_id",
+            "issuer_id",
+            "sender_ephemeral_pub",
+            "space_x25519_pub",
+            "member_wraps"
+          ]
+        },
+        "extensions": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+          },
+          "additionalProperties": true
+        },
+        "critical": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$",
+            "minLength": 3,
+            "maxLength": 128
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 32
+        },
+        "auth": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "signer_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "key_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "issued_at": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+            },
+            "nonce": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            }
+          },
+          "required": [
+            "signer_id",
+            "key_id",
+            "issued_at",
+            "nonce"
+          ]
+        },
+        "proof": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "alg": {
+              "const": "Ed25519"
+            },
+            "sig": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{86}$"
+            },
+            "encoding": {
+              "enum": [
+                "jcs",
+                "dcbor"
+              ]
+            }
+          },
+          "required": [
+            "alg",
+            "sig"
+          ]
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "id",
+        "occurred_at",
+        "payload"
+      ],
+      "dependentRequired": {
+        "auth": [
+          "proof"
+        ],
+        "proof": [
+          "auth"
+        ],
+        "critical": [
+          "extensions"
+        ]
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "protocol": {
+          "const": "wutong/0.1"
+        },
+        "kind": {
+          "const": "wutong.object"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "occurred_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "object_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "space_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "owner_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "object_type": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "media_type": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "byte_length": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "content_digest": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "binding": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "enum": [
+                    "file",
+                    "blob",
+                    "external"
+                  ]
+                },
+                "relative_path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                "external_uri": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096
+                }
+              },
+              "required": [
+                "kind"
+              ],
+              "allOf": [
+                {
+                  "if": {
+                    "properties": {
+                      "kind": {
+                        "const": "file"
+                      }
+                    }
+                  },
+                  "then": {
+                    "required": [
+                      "relative_path"
+                    ]
+                  }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "kind": {
+                        "const": "external"
+                      }
+                    }
+                  },
+                  "then": {
+                    "required": [
+                      "external_uri"
+                    ]
+                  }
+                }
+              ]
+            },
+            "x": {
+              "type": "object",
+              "propertyNames": {
+                "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+              },
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "object_id",
+            "space_id",
+            "owner_id",
+            "object_type",
+            "content_digest",
+            "media_type",
+            "byte_length"
+          ]
+        },
+        "extensions": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+          },
+          "additionalProperties": true
+        },
+        "critical": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$",
+            "minLength": 3,
+            "maxLength": 128
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 32
+        },
+        "auth": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "signer_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "key_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "issued_at": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+            },
+            "nonce": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            }
+          },
+          "required": [
+            "signer_id",
+            "key_id",
+            "issued_at",
+            "nonce"
+          ]
+        },
+        "proof": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "alg": {
+              "const": "Ed25519"
+            },
+            "sig": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{86}$"
+            },
+            "encoding": {
+              "enum": [
+                "jcs",
+                "dcbor"
+              ]
+            }
+          },
+          "required": [
+            "alg",
+            "sig"
+          ]
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "id",
+        "occurred_at",
+        "payload"
+      ],
+      "dependentRequired": {
+        "auth": [
+          "proof"
+        ],
+        "proof": [
+          "auth"
+        ],
+        "critical": [
+          "extensions"
+        ]
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "protocol": {
+          "const": "wutong/0.1"
+        },
+        "kind": {
+          "const": "wutong.revision"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "occurred_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "revision_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "object_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "content_digest": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            "parents": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "uniqueItems": true,
+              "maxItems": 256
+            },
+            "author_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "change_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "provenance": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "was_generated_by": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256
+                },
+                "was_associated_with": {
+                  "type": "string",
+                  "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "was_derived_from": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096
+                  },
+                  "uniqueItems": true,
+                  "maxItems": 256
+                },
+                "used": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096
+                  },
+                  "uniqueItems": true,
+                  "maxItems": 256
+                },
+                "tool_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256
+                },
+                "reviewer_id": {
+                  "type": "string",
+                  "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                }
+              },
+              "required": [
+                "was_generated_by",
+                "was_associated_with"
+              ]
+            },
+            "x": {
+              "type": "object",
+              "propertyNames": {
+                "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+              },
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "revision_id",
+            "object_id",
+            "content_digest",
+            "parents",
+            "author_id"
+          ]
+        },
+        "extensions": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+          },
+          "additionalProperties": true
+        },
+        "critical": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$",
+            "minLength": 3,
+            "maxLength": 128
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 32
+        },
+        "auth": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "signer_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "key_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "issued_at": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+            },
+            "nonce": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            }
+          },
+          "required": [
+            "signer_id",
+            "key_id",
+            "issued_at",
+            "nonce"
+          ]
+        },
+        "proof": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "alg": {
+              "const": "Ed25519"
+            },
+            "sig": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{86}$"
+            },
+            "encoding": {
+              "enum": [
+                "jcs",
+                "dcbor"
+              ]
+            }
+          },
+          "required": [
+            "alg",
+            "sig"
+          ]
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "id",
+        "occurred_at",
+        "payload"
+      ],
+      "dependentRequired": {
+        "auth": [
+          "proof"
+        ],
+        "proof": [
+          "auth"
+        ],
+        "critical": [
+          "extensions"
+        ]
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "protocol": {
+          "const": "wutong/0.1"
+        },
+        "kind": {
+          "const": "wutong.relation"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "occurred_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "relation_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "source_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "target_ref": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "predicate": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "author_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "visibility": {
+              "enum": [
+                "private",
+                "shared",
+                "public"
+              ]
+            },
+            "x": {
+              "type": "object",
+              "propertyNames": {
+                "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+              },
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "relation_id",
+            "source_id",
+            "target_ref",
+            "predicate",
+            "author_id"
+          ]
+        },
+        "extensions": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+          },
+          "additionalProperties": true
+        },
+        "critical": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$",
+            "minLength": 3,
+            "maxLength": 128
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 32
+        },
+        "auth": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "signer_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "key_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "issued_at": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+            },
+            "nonce": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            }
+          },
+          "required": [
+            "signer_id",
+            "key_id",
+            "issued_at",
+            "nonce"
+          ]
+        },
+        "proof": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "alg": {
+              "const": "Ed25519"
+            },
+            "sig": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{86}$"
+            },
+            "encoding": {
+              "enum": [
+                "jcs",
+                "dcbor"
+              ]
+            }
+          },
+          "required": [
+            "alg",
+            "sig"
+          ]
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "id",
+        "occurred_at",
+        "payload"
+      ],
+      "dependentRequired": {
+        "auth": [
+          "proof"
+        ],
+        "proof": [
+          "auth"
+        ],
+        "critical": [
+          "extensions"
+        ]
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "protocol": {
+          "const": "wutong/0.1"
+        },
+        "kind": {
+          "const": "wutong.annotation"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "occurred_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "annotation_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "target_ref": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "target_revision": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            "author_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "body_ref": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "selector": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "type": {
+                  "enum": [
+                    "TextQuote",
+                    "TextPosition",
+                    "BytePosition",
+                    "Node"
+                  ]
+                },
+                "exact": {
+                  "type": "string"
+                },
+                "prefix": {
+                  "type": "string"
+                },
+                "suffix": {
+                  "type": "string"
+                },
+                "start": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "end": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "node_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256
+                }
+              },
+              "required": [
+                "type"
+              ]
+            },
+            "visibility": {
+              "enum": [
+                "private",
+                "shared",
+                "public"
+              ]
+            },
+            "x": {
+              "type": "object",
+              "propertyNames": {
+                "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+              },
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "annotation_id",
+            "target_ref",
+            "author_id",
+            "selector"
+          ]
+        },
+        "extensions": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+          },
+          "additionalProperties": true
+        },
+        "critical": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$",
+            "minLength": 3,
+            "maxLength": 128
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 32
+        },
+        "auth": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "signer_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "key_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "issued_at": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+            },
+            "nonce": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            }
+          },
+          "required": [
+            "signer_id",
+            "key_id",
+            "issued_at",
+            "nonce"
+          ]
+        },
+        "proof": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "alg": {
+              "const": "Ed25519"
+            },
+            "sig": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{86}$"
+            },
+            "encoding": {
+              "enum": [
+                "jcs",
+                "dcbor"
+              ]
+            }
+          },
+          "required": [
+            "alg",
+            "sig"
+          ]
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "id",
+        "occurred_at",
+        "payload"
+      ],
+      "dependentRequired": {
+        "auth": [
+          "proof"
+        ],
+        "proof": [
+          "auth"
+        ],
+        "critical": [
+          "extensions"
+        ]
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "protocol": {
+          "const": "wutong/0.1"
+        },
+        "kind": {
+          "const": "wutong.proposal"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "occurred_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "proposal_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "object_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "proposer_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "base_digest": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            "proposed_digest": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            "intent": {
+              "enum": [
+                "replace",
+                "patch",
+                "metadata",
+                "relation"
+              ]
+            },
+            "status": {
+              "enum": [
+                "pending",
+                "accepted",
+                "rejected",
+                "applied",
+                "stale"
+              ]
+            },
+            "task_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "patches": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "start_byte": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "end_byte": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "expected_slice_digest": {
+                    "type": "string",
+                    "pattern": "^sha256:[0-9a-f]{64}$"
+                  },
+                  "replacement": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "start_byte",
+                  "end_byte",
+                  "expected_slice_digest",
+                  "replacement"
+                ]
+              },
+              "minItems": 1,
+              "maxItems": 256
+            },
+            "provenance": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "was_generated_by": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256
+                },
+                "was_associated_with": {
+                  "type": "string",
+                  "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "was_derived_from": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096
+                  },
+                  "uniqueItems": true,
+                  "maxItems": 256
+                },
+                "used": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096
+                  },
+                  "uniqueItems": true,
+                  "maxItems": 256
+                },
+                "tool_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256
+                },
+                "reviewer_id": {
+                  "type": "string",
+                  "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                }
+              },
+              "required": [
+                "was_generated_by",
+                "was_associated_with"
+              ]
+            },
+            "x": {
+              "type": "object",
+              "propertyNames": {
+                "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+              },
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "proposal_id",
+            "object_id",
+            "proposer_id",
+            "base_digest",
+            "proposed_digest",
+            "intent",
+            "status"
+          ]
+        },
+        "extensions": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+          },
+          "additionalProperties": true
+        },
+        "critical": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$",
+            "minLength": 3,
+            "maxLength": 128
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 32
+        },
+        "auth": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "signer_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "key_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "issued_at": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+            },
+            "nonce": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            }
+          },
+          "required": [
+            "signer_id",
+            "key_id",
+            "issued_at",
+            "nonce"
+          ]
+        },
+        "proof": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "alg": {
+              "const": "Ed25519"
+            },
+            "sig": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{86}$"
+            },
+            "encoding": {
+              "enum": [
+                "jcs",
+                "dcbor"
+              ]
+            }
+          },
+          "required": [
+            "alg",
+            "sig"
+          ]
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "id",
+        "occurred_at",
+        "payload"
+      ],
+      "dependentRequired": {
+        "auth": [
+          "proof"
+        ],
+        "proof": [
+          "auth"
+        ],
+        "critical": [
+          "extensions"
+        ]
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "protocol": {
+          "const": "wutong/0.1"
+        },
+        "kind": {
+          "const": "wutong.task"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "occurred_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "task_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "requester_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "assignee_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "target_ref": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "state": {
+              "enum": [
+                "created",
+                "assigned",
+                "accepted",
+                "running",
+                "awaiting_approval",
+                "completed",
+                "failed",
+                "cancelled"
+              ]
+            },
+            "artifacts": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 4096
+              },
+              "uniqueItems": true,
+              "maxItems": 256
+            },
+            "idempotency_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "x": {
+              "type": "object",
+              "propertyNames": {
+                "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+              },
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "task_id",
+            "requester_id",
+            "state"
+          ]
+        },
+        "extensions": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+          },
+          "additionalProperties": true
+        },
+        "critical": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$",
+            "minLength": 3,
+            "maxLength": 128
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 32
+        },
+        "auth": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "signer_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "key_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "issued_at": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+            },
+            "nonce": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            }
+          },
+          "required": [
+            "signer_id",
+            "key_id",
+            "issued_at",
+            "nonce"
+          ]
+        },
+        "proof": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "alg": {
+              "const": "Ed25519"
+            },
+            "sig": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{86}$"
+            },
+            "encoding": {
+              "enum": [
+                "jcs",
+                "dcbor"
+              ]
+            }
+          },
+          "required": [
+            "alg",
+            "sig"
+          ]
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "id",
+        "occurred_at",
+        "payload"
+      ],
+      "dependentRequired": {
+        "auth": [
+          "proof"
+        ],
+        "proof": [
+          "auth"
+        ],
+        "critical": [
+          "extensions"
+        ]
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "protocol": {
+          "const": "wutong/0.1"
+        },
+        "kind": {
+          "const": "wutong.capability"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "occurred_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "capability_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "issuer_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "audience_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "resource_ref": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "actions": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "uniqueItems": true,
+              "minItems": 1,
+              "maxItems": 64
+            },
+            "not_before": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+            },
+            "expires_at": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+            },
+            "delegable": {
+              "type": "boolean"
+            },
+            "parent_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "revocation_ref": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "x": {
+              "type": "object",
+              "propertyNames": {
+                "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+              },
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "capability_id",
+            "issuer_id",
+            "audience_id",
+            "resource_ref",
+            "actions",
+            "not_before",
+            "expires_at",
+            "delegable"
+          ]
+        },
+        "extensions": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+          },
+          "additionalProperties": true
+        },
+        "critical": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$",
+            "minLength": 3,
+            "maxLength": 128
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 32
+        },
+        "auth": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "signer_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "key_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "issued_at": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+            },
+            "nonce": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            }
+          },
+          "required": [
+            "signer_id",
+            "key_id",
+            "issued_at",
+            "nonce"
+          ]
+        },
+        "proof": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "alg": {
+              "const": "Ed25519"
+            },
+            "sig": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{86}$"
+            },
+            "encoding": {
+              "enum": [
+                "jcs",
+                "dcbor"
+              ]
+            }
+          },
+          "required": [
+            "alg",
+            "sig"
+          ]
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "id",
+        "occurred_at",
+        "payload"
+      ],
+      "dependentRequired": {
+        "auth": [
+          "proof"
+        ],
+        "proof": [
+          "auth"
+        ],
+        "critical": [
+          "extensions"
+        ]
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "protocol": {
+          "const": "wutong/0.1"
+        },
+        "kind": {
+          "const": "wutong.event"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "occurred_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "event_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "actor_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "action": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "subject_ref": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "result": {
+              "enum": [
+                "accepted",
+                "rejected",
+                "pending",
+                "completed",
+                "failed"
+              ]
+            },
+            "causes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "uniqueItems": true,
+              "maxItems": 256
+            },
+            "idempotency_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "x": {
+              "type": "object",
+              "propertyNames": {
+                "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+              },
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "event_id",
+            "actor_id",
+            "action",
+            "subject_ref",
+            "result"
+          ]
+        },
+        "extensions": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+          },
+          "additionalProperties": true
+        },
+        "critical": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$",
+            "minLength": 3,
+            "maxLength": 128
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 32
+        },
+        "auth": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "signer_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "key_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "issued_at": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+            },
+            "nonce": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            }
+          },
+          "required": [
+            "signer_id",
+            "key_id",
+            "issued_at",
+            "nonce"
+          ]
+        },
+        "proof": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "alg": {
+              "const": "Ed25519"
+            },
+            "sig": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{86}$"
+            },
+            "encoding": {
+              "enum": [
+                "jcs",
+                "dcbor"
+              ]
+            }
+          },
+          "required": [
+            "alg",
+            "sig"
+          ]
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "id",
+        "occurred_at",
+        "payload"
+      ],
+      "dependentRequired": {
+        "auth": [
+          "proof"
+        ],
+        "proof": [
+          "auth"
+        ],
+        "critical": [
+          "extensions"
+        ]
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "protocol": {
+          "const": "wutong/0.1"
+        },
+        "kind": {
+          "const": "wutong.service"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "occurred_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "service_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "space_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "owner_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "service_type": {
+              "enum": [
+                "blog",
+                "wiki",
+                "forum",
+                "qa",
+                "media",
+                "im",
+                "agent",
+                "api",
+                "custom"
+              ]
+            },
+            "source_refs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 4096
+              },
+              "uniqueItems": true,
+              "maxItems": 256
+            },
+            "spec_digest": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            "visibility": {
+              "enum": [
+                "local",
+                "private",
+                "shared",
+                "public"
+              ]
+            },
+            "x": {
+              "type": "object",
+              "propertyNames": {
+                "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+              },
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "service_id",
+            "space_id",
+            "owner_id",
+            "service_type",
+            "source_refs",
+            "spec_digest",
+            "visibility"
+          ]
+        },
+        "extensions": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+          },
+          "additionalProperties": true
+        },
+        "critical": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$",
+            "minLength": 3,
+            "maxLength": 128
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 32
+        },
+        "auth": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "signer_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "key_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "issued_at": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+            },
+            "nonce": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            }
+          },
+          "required": [
+            "signer_id",
+            "key_id",
+            "issued_at",
+            "nonce"
+          ]
+        },
+        "proof": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "alg": {
+              "const": "Ed25519"
+            },
+            "sig": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{86}$"
+            },
+            "encoding": {
+              "enum": [
+                "jcs",
+                "dcbor"
+              ]
+            }
+          },
+          "required": [
+            "alg",
+            "sig"
+          ]
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "id",
+        "occurred_at",
+        "payload"
+      ],
+      "dependentRequired": {
+        "auth": [
+          "proof"
+        ],
+        "proof": [
+          "auth"
+        ],
+        "critical": [
+          "extensions"
+        ]
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "protocol": {
+          "const": "wutong/0.1"
+        },
+        "kind": {
+          "const": "wutong.service_invocation"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "occurred_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "invocation_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "service_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "caller_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "action": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "target_ref": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "capability_ids": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "uniqueItems": true,
+              "maxItems": 256
+            },
+            "idempotency_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "arguments": {
+              "type": "object",
+              "propertyNames": {
+                "pattern": "^[\\x21-\\x7e]+$"
+              },
+              "additionalProperties": true
+            },
+            "x": {
+              "type": "object",
+              "propertyNames": {
+                "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+              },
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "invocation_id",
+            "service_id",
+            "caller_id",
+            "action",
+            "target_ref",
+            "idempotency_key"
+          ]
+        },
+        "extensions": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+          },
+          "additionalProperties": true
+        },
+        "critical": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$",
+            "minLength": 3,
+            "maxLength": 128
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 32
+        },
+        "auth": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "signer_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "key_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "issued_at": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+            },
+            "nonce": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            }
+          },
+          "required": [
+            "signer_id",
+            "key_id",
+            "issued_at",
+            "nonce"
+          ]
+        },
+        "proof": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "alg": {
+              "const": "Ed25519"
+            },
+            "sig": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{86}$"
+            },
+            "encoding": {
+              "enum": [
+                "jcs",
+                "dcbor"
+              ]
+            }
+          },
+          "required": [
+            "alg",
+            "sig"
+          ]
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "id",
+        "occurred_at",
+        "payload"
+      ],
+      "dependentRequired": {
+        "auth": [
+          "proof"
+        ],
+        "proof": [
+          "auth"
+        ],
+        "critical": [
+          "extensions"
+        ]
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "protocol": {
+          "const": "wutong/0.1"
+        },
+        "kind": {
+          "const": "wutong.receipt"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "occurred_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "receipt_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "request_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "request_digest": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            "responder_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "status": {
+              "enum": [
+                "accepted",
+                "completed",
+                "rejected",
+                "notarized"
+              ]
+            },
+            "error_code": {
+              "enum": [
+                "ERR_SCHEMA",
+                "ERR_VERSION",
+                "ERR_SIGNATURE",
+                "ERR_KEY_UNBOUND",
+                "ERR_KEY_REVOKED",
+                "ERR_REVOCATION_STALE",
+                "ERR_PERMISSION",
+                "ERR_REPLAY",
+                "ERR_EQUIVOCATION",
+                "ERR_DECRYPTION_FAILED",
+                "ERR_CONFLICT",
+                "ERR_SYMLINK_OR_TRAVERSAL",
+                "ERR_SSRF_BLOCKED",
+                "ERR_UNRESOLVED",
+                "ERR_RATE_LIMIT",
+                "ERR_UNSUPPORTED"
+              ]
+            },
+            "result_digest": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            "applied_revision_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "retry_after_seconds": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 86400
+            },
+            "x": {
+              "type": "object",
+              "propertyNames": {
+                "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+              },
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "receipt_id",
+            "request_id",
+            "request_digest",
+            "responder_id",
+            "status"
+          ],
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "status": {
+                    "const": "rejected"
+                  }
+                }
+              },
+              "then": {
+                "required": [
+                  "error_code"
+                ]
+              }
+            }
+          ]
+        },
+        "extensions": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+          },
+          "additionalProperties": true
+        },
+        "critical": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$",
+            "minLength": 3,
+            "maxLength": 128
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 32
+        },
+        "auth": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "signer_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "key_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "issued_at": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+            },
+            "nonce": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            }
+          },
+          "required": [
+            "signer_id",
+            "key_id",
+            "issued_at",
+            "nonce"
+          ]
+        },
+        "proof": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "alg": {
+              "const": "Ed25519"
+            },
+            "sig": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{86}$"
+            },
+            "encoding": {
+              "enum": [
+                "jcs",
+                "dcbor"
+              ]
+            }
+          },
+          "required": [
+            "alg",
+            "sig"
+          ]
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "id",
+        "occurred_at",
+        "payload"
+      ],
+      "dependentRequired": {
+        "auth": [
+          "proof"
+        ],
+        "proof": [
+          "auth"
+        ],
+        "critical": [
+          "extensions"
+        ]
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "protocol": {
+          "const": "wutong/0.1"
+        },
+        "kind": {
+          "const": "wutong.publication"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "occurred_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "publication_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "object_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "revision_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "publisher_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "visibility": {
+              "enum": [
+                "unlisted",
+                "public"
+              ]
+            },
+            "representation_digest": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            "published_at": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+            },
+            "x": {
+              "type": "object",
+              "propertyNames": {
+                "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+              },
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "publication_id",
+            "object_id",
+            "revision_id",
+            "publisher_id",
+            "visibility",
+            "representation_digest",
+            "published_at"
+          ]
+        },
+        "extensions": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+          },
+          "additionalProperties": true
+        },
+        "critical": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$",
+            "minLength": 3,
+            "maxLength": 128
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 32
+        },
+        "auth": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "signer_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "key_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "issued_at": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+            },
+            "nonce": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            }
+          },
+          "required": [
+            "signer_id",
+            "key_id",
+            "issued_at",
+            "nonce"
+          ]
+        },
+        "proof": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "alg": {
+              "const": "Ed25519"
+            },
+            "sig": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{86}$"
+            },
+            "encoding": {
+              "enum": [
+                "jcs",
+                "dcbor"
+              ]
+            }
+          },
+          "required": [
+            "alg",
+            "sig"
+          ]
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "id",
+        "occurred_at",
+        "payload"
+      ],
+      "dependentRequired": {
+        "auth": [
+          "proof"
+        ],
+        "proof": [
+          "auth"
+        ],
+        "critical": [
+          "extensions"
+        ]
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "protocol": {
+          "const": "wutong/0.1"
+        },
+        "kind": {
+          "const": "wutong.external_binding"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "occurred_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "binding_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "object_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "adapter_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "account_ref": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "remote_ref": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "direction": {
+              "enum": [
+                "export",
+                "import",
+                "bidirectional",
+                "interaction-only"
+              ]
+            },
+            "last_source_revision": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "origin_digest": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            "x": {
+              "type": "object",
+              "propertyNames": {
+                "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+              },
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "binding_id",
+            "object_id",
+            "adapter_id",
+            "account_ref",
+            "remote_ref",
+            "direction"
+          ]
+        },
+        "extensions": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+          },
+          "additionalProperties": true
+        },
+        "critical": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$",
+            "minLength": 3,
+            "maxLength": 128
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 32
+        },
+        "auth": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "signer_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "key_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "issued_at": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+            },
+            "nonce": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            }
+          },
+          "required": [
+            "signer_id",
+            "key_id",
+            "issued_at",
+            "nonce"
+          ]
+        },
+        "proof": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "alg": {
+              "const": "Ed25519"
+            },
+            "sig": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{86}$"
+            },
+            "encoding": {
+              "enum": [
+                "jcs",
+                "dcbor"
+              ]
+            }
+          },
+          "required": [
+            "alg",
+            "sig"
+          ]
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "id",
+        "occurred_at",
+        "payload"
+      ],
+      "dependentRequired": {
+        "auth": [
+          "proof"
+        ],
+        "proof": [
+          "auth"
+        ],
+        "critical": [
+          "extensions"
+        ]
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "protocol": {
+          "const": "wutong/0.1"
+        },
+        "kind": {
+          "const": "wutong.agent_manifest"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "occurred_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "agent_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "display_name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "skills": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "uniqueItems": true,
+              "maxItems": 256
+            },
+            "input_types": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "uniqueItems": true,
+              "maxItems": 256
+            },
+            "output_types": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "uniqueItems": true,
+              "maxItems": 256
+            },
+            "execution": {
+              "enum": [
+                "local",
+                "remote",
+                "hybrid"
+              ]
+            },
+            "endpoint": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "x": {
+              "type": "object",
+              "propertyNames": {
+                "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+              },
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "agent_id",
+            "display_name",
+            "skills",
+            "input_types",
+            "output_types",
+            "execution"
+          ]
+        },
+        "extensions": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+          },
+          "additionalProperties": true
+        },
+        "critical": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$",
+            "minLength": 3,
+            "maxLength": 128
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 32
+        },
+        "auth": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "signer_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "key_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "issued_at": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+            },
+            "nonce": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            }
+          },
+          "required": [
+            "signer_id",
+            "key_id",
+            "issued_at",
+            "nonce"
+          ]
+        },
+        "proof": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "alg": {
+              "const": "Ed25519"
+            },
+            "sig": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{86}$"
+            },
+            "encoding": {
+              "enum": [
+                "jcs",
+                "dcbor"
+              ]
+            }
+          },
+          "required": [
+            "alg",
+            "sig"
+          ]
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "id",
+        "occurred_at",
+        "payload"
+      ],
+      "dependentRequired": {
+        "auth": [
+          "proof"
+        ],
+        "proof": [
+          "auth"
+        ],
+        "critical": [
+          "extensions"
+        ]
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "protocol": {
+          "const": "wutong/0.1"
+        },
+        "kind": {
+          "const": "wutong.artifact"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "occurred_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "task_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "creator_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "content_digest": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            "media_type": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "byte_length": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "provenance": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "was_generated_by": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256
+                },
+                "was_associated_with": {
+                  "type": "string",
+                  "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "was_derived_from": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096
+                  },
+                  "uniqueItems": true,
+                  "maxItems": 256
+                },
+                "used": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096
+                  },
+                  "uniqueItems": true,
+                  "maxItems": 256
+                },
+                "tool_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256
+                },
+                "reviewer_id": {
+                  "type": "string",
+                  "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                }
+              },
+              "required": [
+                "was_generated_by",
+                "was_associated_with"
+              ]
+            },
+            "x": {
+              "type": "object",
+              "propertyNames": {
+                "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+              },
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "artifact_id",
+            "task_id",
+            "creator_id",
+            "content_digest",
+            "media_type",
+            "byte_length"
+          ]
+        },
+        "extensions": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+          },
+          "additionalProperties": true
+        },
+        "critical": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$",
+            "minLength": 3,
+            "maxLength": 128
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 32
+        },
+        "auth": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "signer_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "key_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "issued_at": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+            },
+            "nonce": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            }
+          },
+          "required": [
+            "signer_id",
+            "key_id",
+            "issued_at",
+            "nonce"
+          ]
+        },
+        "proof": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "alg": {
+              "const": "Ed25519"
+            },
+            "sig": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{86}$"
+            },
+            "encoding": {
+              "enum": [
+                "jcs",
+                "dcbor"
+              ]
+            }
+          },
+          "required": [
+            "alg",
+            "sig"
+          ]
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "id",
+        "occurred_at",
+        "payload"
+      ],
+      "dependentRequired": {
+        "auth": [
+          "proof"
+        ],
+        "proof": [
+          "auth"
+        ],
+        "critical": [
+          "extensions"
+        ]
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "protocol": {
+          "const": "wutong/0.1"
+        },
+        "kind": {
+          "const": "wutong.sync_frame"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "occurred_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "session_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "space_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "object_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "step": {
+              "enum": [
+                "HELLO",
+                "AUTH",
+                "SYNC_OFFER",
+                "SYNC_REQUEST",
+                "SYNC_CHUNK",
+                "SYNC_ACK",
+                "PRESENCE"
+              ]
+            },
+            "seq": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "supported_codecs": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "automerge/1",
+                  "yrs/1",
+                  "snapshot/1"
+                ]
+              },
+              "uniqueItems": true,
+              "minItems": 1,
+              "maxItems": 8
+            },
+            "selected_codec": {
+              "enum": [
+                "automerge/1",
+                "yrs/1",
+                "snapshot/1"
+              ]
+            },
+            "heads": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$"
+              },
+              "uniqueItems": true,
+              "maxItems": 256
+            },
+            "want": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$"
+              },
+              "uniqueItems": true,
+              "maxItems": 256
+            },
+            "compacted_WaterMark_seq": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "chunk_digest": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            "chunk_b64u": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "minLength": 1,
+              "maxLength": 1048576
+            },
+            "chunk_parents": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$"
+              },
+              "uniqueItems": true,
+              "maxItems": 256
+            },
+            "presence_state": {
+              "enum": [
+                "online",
+                "typing",
+                "viewing",
+                "idle"
+              ]
+            },
+            "ttl_seconds": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 60
+            },
+            "x": {
+              "type": "object",
+              "propertyNames": {
+                "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+              },
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "session_id",
+            "space_id",
+            "step",
+            "seq"
+          ]
+        },
+        "extensions": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+          },
+          "additionalProperties": true
+        },
+        "critical": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$",
+            "minLength": 3,
+            "maxLength": 128
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 32
+        },
+        "auth": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "signer_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "key_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "issued_at": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+            },
+            "nonce": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            }
+          },
+          "required": [
+            "signer_id",
+            "key_id",
+            "issued_at",
+            "nonce"
+          ]
+        },
+        "proof": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "alg": {
+              "const": "Ed25519"
+            },
+            "sig": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{86}$"
+            },
+            "encoding": {
+              "enum": [
+                "jcs",
+                "dcbor"
+              ]
+            }
+          },
+          "required": [
+            "alg",
+            "sig"
+          ]
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "id",
+        "occurred_at",
+        "payload"
+      ],
+      "dependentRequired": {
+        "auth": [
+          "proof"
+        ],
+        "proof": [
+          "auth"
+        ],
+        "critical": [
+          "extensions"
+        ]
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "protocol": {
+          "const": "wutong/0.1"
+        },
+        "kind": {
+          "const": "wutong.encrypted_envelope"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "occurred_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "space_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "epoch": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "key_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "sender_ephemeral_pub": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "aead_alg": {
+              "const": "ChaCha20-Poly1305"
+            },
+            "kdf_alg": {
+              "const": "HKDF-SHA256"
+            },
+            "nonce_b64u": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{16}$"
+            },
+            "inner_kind": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "aad_digest": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            "ciphertext_b64u": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "minLength": 1,
+              "maxLength": 1048576
+            },
+            "x": {
+              "type": "object",
+              "propertyNames": {
+                "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+              },
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "space_id",
+            "epoch",
+            "key_id",
+            "sender_ephemeral_pub",
+            "aead_alg",
+            "kdf_alg",
+            "nonce_b64u",
+            "inner_kind",
+            "aad_digest",
+            "ciphertext_b64u"
+          ]
+        },
+        "extensions": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+          },
+          "additionalProperties": true
+        },
+        "critical": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$",
+            "minLength": 3,
+            "maxLength": 128
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 32
+        },
+        "auth": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "signer_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "key_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "issued_at": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+            },
+            "nonce": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            }
+          },
+          "required": [
+            "signer_id",
+            "key_id",
+            "issued_at",
+            "nonce"
+          ]
+        },
+        "proof": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "alg": {
+              "const": "Ed25519"
+            },
+            "sig": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{86}$"
+            },
+            "encoding": {
+              "enum": [
+                "jcs",
+                "dcbor"
+              ]
+            }
+          },
+          "required": [
+            "alg",
+            "sig"
+          ]
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "id",
+        "occurred_at",
+        "payload"
+      ],
+      "dependentRequired": {
+        "auth": [
+          "proof"
+        ],
+        "proof": [
+          "auth"
+        ],
+        "critical": [
+          "extensions"
+        ]
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "protocol": {
+          "const": "wutong/0.1"
+        },
+        "kind": {
+          "const": "wutong.node_meta"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "occurred_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "node_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "operator_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "implementation": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "supported_profiles": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "core",
+                  "document",
+                  "agent",
+                  "security",
+                  "sync",
+                  "federation",
+                  "service",
+                  "interop"
+                ]
+              },
+              "uniqueItems": true,
+              "minItems": 1,
+              "maxItems": 16
+            },
+            "supported_encodings": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "application/wtp+json",
+                  "application/wtp+cbor"
+                ]
+              },
+              "uniqueItems": true,
+              "minItems": 1,
+              "maxItems": 4
+            },
+            "max_envelope_bytes": {
+              "type": "integer",
+              "minimum": 4096,
+              "maximum": 67108864
+            },
+            "endpoints": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "base_url": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096
+                },
+                "meta_path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256
+                },
+                "objects_path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256
+                },
+                "revisions_path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256
+                },
+                "resolve_path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256
+                },
+                "subscriptions_path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256
+                },
+                "invocations_path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256
+                },
+                "sync_path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256
+                }
+              },
+              "required": [
+                "base_url",
+                "meta_path",
+                "objects_path",
+                "revisions_path",
+                "resolve_path",
+                "subscriptions_path",
+                "invocations_path"
+              ]
+            },
+            "x": {
+              "type": "object",
+              "propertyNames": {
+                "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+              },
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "node_id",
+            "operator_id",
+            "implementation",
+            "supported_profiles",
+            "supported_encodings",
+            "max_envelope_bytes",
+            "endpoints"
+          ]
+        },
+        "extensions": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+          },
+          "additionalProperties": true
+        },
+        "critical": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$",
+            "minLength": 3,
+            "maxLength": 128
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 32
+        },
+        "auth": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "signer_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "key_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "issued_at": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+            },
+            "nonce": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            }
+          },
+          "required": [
+            "signer_id",
+            "key_id",
+            "issued_at",
+            "nonce"
+          ]
+        },
+        "proof": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "alg": {
+              "const": "Ed25519"
+            },
+            "sig": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{86}$"
+            },
+            "encoding": {
+              "enum": [
+                "jcs",
+                "dcbor"
+              ]
+            }
+          },
+          "required": [
+            "alg",
+            "sig"
+          ]
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "id",
+        "occurred_at",
+        "payload"
+      ],
+      "dependentRequired": {
+        "auth": [
+          "proof"
+        ],
+        "proof": [
+          "auth"
+        ],
+        "critical": [
+          "extensions"
+        ]
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "protocol": {
+          "const": "wutong/0.1"
+        },
+        "kind": {
+          "const": "wutong.subscription"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "occurred_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "subscription_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "subscriber_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "target_ref": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "filter_kinds": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "uniqueItems": true,
+              "maxItems": 256
+            },
+            "cursor": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "delivery_mode": {
+              "enum": [
+                "poll",
+                "sse",
+                "websocket",
+                "webhook"
+              ]
+            },
+            "status": {
+              "enum": [
+                "active",
+                "paused",
+                "cancelled",
+                "expired"
+              ]
+            },
+            "expires_at": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+            },
+            "x": {
+              "type": "object",
+              "propertyNames": {
+                "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+              },
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "subscription_id",
+            "subscriber_id",
+            "target_ref",
+            "filter_kinds",
+            "delivery_mode",
+            "status",
+            "expires_at"
+          ]
+        },
+        "extensions": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$"
+          },
+          "additionalProperties": true
+        },
+        "critical": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9_-]+)+$",
+            "minLength": 3,
+            "maxLength": 128
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 32
+        },
+        "auth": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "signer_id": {
+              "type": "string",
+              "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "key_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "issued_at": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+            },
+            "nonce": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            }
+          },
+          "required": [
+            "signer_id",
+            "key_id",
+            "issued_at",
+            "nonce"
+          ]
+        },
+        "proof": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "alg": {
+              "const": "Ed25519"
+            },
+            "sig": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{86}$"
+            },
+            "encoding": {
+              "enum": [
+                "jcs",
+                "dcbor"
+              ]
+            }
+          },
+          "required": [
+            "alg",
+            "sig"
+          ]
+        }
+      },
+      "required": [
+        "protocol",
+        "kind",
+        "id",
+        "occurred_at",
+        "payload"
+      ],
+      "dependentRequired": {
+        "auth": [
+          "proof"
+        ],
+        "proof": [
+          "auth"
+        ],
+        "critical": [
+          "extensions"
+        ]
+      }
+    }
+  ]
+}
