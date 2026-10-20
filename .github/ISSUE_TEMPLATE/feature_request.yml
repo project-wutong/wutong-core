@@ -1,0 +1,15 @@
+name: Feature request / 功能建议
+description: Propose new functionality (protocol changes need a WIP in wutong-protocol).
+labels: ["type: feature", "status: triage"]
+body:
+  - type: textarea
+    id: problem
+    attributes: {label: Problem / 问题, description: What user need does this address?}
+    validations: {required: true}
+  - type: textarea
+    id: proposal
+    attributes: {label: Proposal / 方案}
+    validations: {required: true}
+  - type: textarea
+    id: acceptance
+    attributes: {label: Acceptance criteria / 验收准则}

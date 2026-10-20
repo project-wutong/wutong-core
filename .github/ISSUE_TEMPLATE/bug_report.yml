@@ -1,0 +1,21 @@
+name: Bug report / 缺陷报告
+description: Something does not work as specified.
+labels: ["type: bug", "status: triage"]
+body:
+  - type: textarea
+    id: what
+    attributes: {label: What happened? / 发生了什么, description: Include exact commands, inputs and output.}
+    validations: {required: true}
+  - type: textarea
+    id: expected
+    attributes: {label: Expected behaviour / 期望行为, description: Cite the spec section (e.g. WTP-STD-001 §4.3) when relevant.}
+    validations: {required: true}
+  - type: input
+    id: version
+    attributes: {label: Version / commit}
+  - type: dropdown
+    id: os
+    attributes:
+      label: Platform
+      multiple: true
+      options: [Linux, macOS, Windows, Other]
