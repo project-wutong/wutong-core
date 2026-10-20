@@ -1,0 +1,25 @@
+[package]
+name = "wutong-core"
+description = "Wutong Protocol core facade: parse, validate, canonicalize, sign and verify WTP envelopes"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[dependencies]
+wtp-types.workspace = true
+wtp-wire.workspace = true
+wtp-crypto.workspace = true
+wtp-agent.workspace = true
+wtp-document.workspace = true
+wtp-policy.workspace = true
+serde_json.workspace = true
+
+[dev-dependencies]
+hex.workspace = true
+ed25519-dalek.workspace = true
+
+[lints]
+workspace = true
