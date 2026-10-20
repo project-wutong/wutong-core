@@ -1,0 +1,41 @@
+[workspace]
+resolver = "3"
+members = ["crates/*"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+license = "AGPL-3.0-only"
+repository = "https://github.com/project-wutong/wutong-core"
+homepage = "https://github.com/project-wutong"
+authors = ["Project Wutong contributors"]
+
+[workspace.dependencies]
+wtp-types = { path = "crates/wtp-types", version = "0.1.0" }
+wtp-wire = { path = "crates/wtp-wire", version = "0.1.0" }
+wtp-crypto = { path = "crates/wtp-crypto", version = "0.1.0" }
+wtp-agent = { path = "crates/wtp-agent", version = "0.1.0" }
+wtp-document = { path = "crates/wtp-document", version = "0.1.0" }
+wtp-policy = { path = "crates/wtp-policy", version = "0.1.0" }
+wutong-core = { path = "crates/wutong-core", version = "0.1.0" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+sha2 = "0.10"
+hex = "0.4"
+base64 = "0.22"
+ed25519-dalek = { version = "2", features = ["rand_core"] }
+jsonschema = { version = "0.59", default-features = false }
+regex = "1"
+time = { version = "0.3", features = ["parsing", "formatting", "macros"] }
+
+[workspace.lints.rust]
+unsafe_code = "deny"
+missing_docs = "warn"
+
+[workspace.lints.clippy]
+all = { level = "warn", priority = -1 }
+
+[profile.release]
+lto = "thin"
