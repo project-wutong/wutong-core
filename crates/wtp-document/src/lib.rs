@@ -161,9 +161,13 @@ mod tests {
     fn patches_preserve_untouched_bytes() {
         let base = "\u{feff}# T\r\npara A\r\n% comment\r\n".as_bytes();
         let p = patch(8, 14, base, "段落 A");
-        let out =
-            apply_source_patches(base, std::slice::from_ref(&p), Some(sha256_digest(base).as_str()), None)
-                .unwrap();
+        let out = apply_source_patches(
+            base,
+            std::slice::from_ref(&p),
+            Some(sha256_digest(base).as_str()),
+            None,
+        )
+        .unwrap();
         assert_eq!(out, "\u{feff}# T\r\n段落 A\r\n% comment\r\n".as_bytes());
         assert!(apply_source_patches(base, &[p.clone(), p], None, None).is_err());
         let mut bad = patch(0, 3, base, "x");

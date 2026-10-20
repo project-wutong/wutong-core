@@ -130,6 +130,15 @@ fn check_nonce(n: &str) -> Result<(), WtpError> {
     }
 }
 
+/// Re-export of the Ed25519 implementation used by this crate.
+pub use ed25519_dalek;
+
+/// Build a verifying key from 32 bytes (call [`validate_public_key_hex`] first for weak-key checks).
+pub fn verifying_key(bytes: &[u8; 32]) -> Result<VerifyingKey, WtpError> {
+    VerifyingKey::from_bytes(bytes)
+        .map_err(|_| err(ErrorCode::KeyUnbound, "invalid Ed25519 public key"))
+}
+
 /// Ed25519 key from a 32-byte seed.
 pub fn signing_key_from_seed(seed: &[u8; 32]) -> SigningKey {
     SigningKey::from_bytes(seed)
