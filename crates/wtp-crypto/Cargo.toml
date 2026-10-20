@@ -1,0 +1,20 @@
+[package]
+name = "wtp-crypto"
+description = "Wutong Protocol signed envelopes: domain-separated Ed25519 over JCS / dCBOR, replay & equivocation checks"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[dependencies]
+wtp-types.workspace = true
+wtp-wire = { workspace = true, default-features = false }
+serde_json.workspace = true
+ed25519-dalek.workspace = true
+base64.workspace = true
+hex.workspace = true
+
+[lints]
+workspace = true
