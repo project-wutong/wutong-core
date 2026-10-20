@@ -1,0 +1,13 @@
+{
+  "protocol": "wutong/0.1",
+  "kind": "wutong.event",
+  "id": "urn:uuid:019a1111-1111-7111-8111-00000000271d",
+  "occurred_at": "2026-10-18T10:00:00Z",
+  "payload": {
+    "event_id": "urn:uuid:019a1111-1111-7111-8111-000000000515",
+    "actor_id": "urn:uuid:019a1111-1111-7111-8111-000000000516",
+    "action": "document.propose",
+    "subject_ref": "Example",
+    "result": "pending"
+  }
+}

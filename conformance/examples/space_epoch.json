@@ -1,0 +1,23 @@
+{
+  "protocol": "wutong/0.1",
+  "kind": "wutong.space_epoch",
+  "id": "urn:uuid:019a1111-1111-7111-8111-000000002715",
+  "occurred_at": "2026-10-18T10:00:00Z",
+  "payload": {
+    "epoch_id": "urn:uuid:019a1111-1111-7111-8111-0000000001f5",
+    "space_id": "urn:uuid:019a1111-1111-7111-8111-0000000001f6",
+    "epoch": 1,
+    "key_id": "local-key-01",
+    "issuer_id": "urn:uuid:019a1111-1111-7111-8111-0000000001f9",
+    "sender_ephemeral_pub": "03a107bff3ce10be1d70dd18e74bc09967e4d6309ba50d5f1ddc8664125531b8",
+    "space_x25519_pub": "03a107bff3ce10be1d70dd18e74bc09967e4d6309ba50d5f1ddc8664125531b8",
+    "member_wraps": [
+      {
+        "member_id": "urn:uuid:019a1111-1111-7111-8111-000000000001",
+        "member_key_id": "x25519-key-01",
+        "nonce_b64u": "AAAAAAAAAAAAAAAA",
+        "wrapped_key_b64u": "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXo"
+      }
+    ]
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "protocol": "wutong/0.1",
+  "kind": "wutong.relation",
+  "id": "urn:uuid:019a1111-1111-7111-8111-000000002718",
+  "occurred_at": "2026-10-18T10:00:00Z",
+  "payload": {
+    "relation_id": "urn:uuid:019a1111-1111-7111-8111-000000000321",
+    "source_id": "urn:uuid:019a1111-1111-7111-8111-000000000322",
+    "target_ref": "urn:uuid:019a1111-1111-7111-8111-000000009999",
+    "predicate": "references",
+    "author_id": "urn:uuid:019a1111-1111-7111-8111-000000000325"
+  }
+}

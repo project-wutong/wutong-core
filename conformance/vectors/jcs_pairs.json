@@ -1,0 +1,35 @@
+[
+  {
+    "input": {
+      "z": "中文",
+      "a": [
+        " ",
+        "\n",
+        "𝌆",
+        1,
+        true,
+        null
+      ]
+    },
+    "canonical": "{\"a\":[\" \",\"\\n\",\"𝌆\",1,true,null],\"z\":\"中文\"}"
+  },
+  {
+    "input": {
+      "p": {
+        "z": "é",
+        "a": "é"
+      },
+      "a": 0
+    },
+    "canonical": "{\"a\":0,\"p\":{\"a\":\"é\",\"z\":\"é\"}}"
+  },
+  {
+    "comment": "RFC 8785 Section 3.2.3 UTF-16 code unit sorting: U+10348 (0xD800 0xDF48) sorts before U+E000 (0xE000)",
+    "unicode_keys": true,
+    "input": {
+      "": 1,
+      "𐍈": 2
+    },
+    "canonical": "{\"𐍈\":2,\"\":1}"
+  }
+]

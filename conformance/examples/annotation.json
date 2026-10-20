@@ -1,0 +1,15 @@
+{
+  "protocol": "wutong/0.1",
+  "kind": "wutong.annotation",
+  "id": "urn:uuid:019a1111-1111-7111-8111-000000002719",
+  "occurred_at": "2026-10-18T10:00:00Z",
+  "payload": {
+    "annotation_id": "urn:uuid:019a1111-1111-7111-8111-000000000385",
+    "target_ref": "urn:uuid:019a1111-1111-7111-8111-000000009999",
+    "author_id": "urn:uuid:019a1111-1111-7111-8111-000000000387",
+    "selector": {
+      "type": "TextQuote",
+      "exact": "test"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "protocol": "wutong/0.1",
+  "kind": "wutong.encrypted_envelope",
+  "id": "urn:uuid:019a1111-1111-7111-8111-000000009991",
+  "occurred_at": "2026-10-18T10:00:00Z",
+  "payload": {
+    "space_id": "urn:uuid:019a1111-1111-7111-8111-000000000191",
+    "epoch": 1,
+    "key_id": "epoch-0001",
+    "sender_ephemeral_pub": "219e4d800da968d2a5fcb009c784f4746c7138edb9ee4844b739e830b05cf424",
+    "aead_alg": "ChaCha20-Poly1305",
+    "kdf_alg": "HKDF-SHA256",
+    "nonce_b64u": "VVVVVVVVVVVVVVVV",
+    "inner_kind": "wutong.object",
+    "aad_digest": "sha256:d24f1626c4e601c21d526f189c7e67c866a1ef75e280921b3f0a1c6413f25af4",
+    "ciphertext_b64u": "aaw6ll9zsX_V-klcRSiTWj4zeJmfajXpEa27knlWKYHjSX_UyTVjex73tKoMuTTx2KbphAxGLtcj_LYTqsX-OS7Q5WLsRsp4uFumtOvJ9kRTljJOWWT1sxt3Y1Wt7ind0q3i6-z7yr2kh_l_kwxyEg_rZXLFOL8l0x72lcNenabQAjUXpXlOwPi_xw5vcTo4VTzXbN7P110lDHB3MfirshbYgHBw_e0spVyWC130PC8mRJyCwUA7VTg9SMAJwEWpwuC2GE4nUFw3dZcB8o2Dt4boJ3Y5P88gR7xwCroKtCxlxe-jvYukg7hSL9Ny7PdzJ2zSn6fDQW4NjaKonuPunu-trkmCId9ZfqLU3Byd-wWagyZLfmiaCjexCqNFZzxLQXYONHrS9jG65kzzF0948rBGK3WUlzwB6agCBvgQwlv42XKFl8U3lzfn20ypSAqwSKVGcQoArJl_v8oA6QfbCjwCOFBJab8alaToYpyEdyxik4xK2JRYj0Ng1Er3-v9b_6k8WGG7MsRGYUy05i3vJa95xdjUN2dT1YkRlIs0SCFMYkViFybxpTgU0hWUGep5ErI2qRbcZFHGVGr5lpYl3nOSCmN-QBG6lRpeHERHbSzoK2PUxyiHmDQXXMQq3hpAuyYOinBLIdCVBNtWy0-KJD85FxSHvKQfReEVeF9B8rkPv2ayFg8ZvDCpum8rOxvctY9Po6gT0UjOewyEPpLaaefhLh1yZvUVLZKgagmBH132sXZrnIgaPQ9y7zNRXBwTgXwOCl1ML2Bw_XUWvPyE6nyP4kFHI5Tv34cXBrXSEzxNoGXFzJhRKdtyaDNCgo-oQFWuugNG2TrvF2-HejN1-dVpSfSv9dqSUNyrbU2Z-SAWzXuglve0VYMTVKkTQT4zb2jibRnVWdV2O59pRYhvtHG3rgTkzflP2Y5op2lbHL4oIFe0XH5jdQXTCm044C0FrmSppk1nrwHasc122WAYqb6kTibu1ylRDzRoiz9W1mZSOYhnTKlIy1bSx-p1BCEhg2UumHB2Rsbh1F4Otk3VJLZe2Lz7cw"
+  },
+  "auth": {
+    "signer_id": "urn:uuid:019a1111-1111-7111-8111-000000000001",
+    "key_id": "local-key-01",
+    "issued_at": "2026-10-18T10:00:00Z",
+    "nonce": "CCCCCCCCCCCCCCCCCCCCCCCC"
+  },
+  "proof": {
+    "alg": "Ed25519",
+    "sig": "KK2WbvWBjQ9DUYR3SAfcWGrHaetE0nJHYyCi6zW6a_tFIWJYxso88XTJr6Qh-OxZuUwPxmiXObUA_uq5ZAMhAA"
+  }
+}

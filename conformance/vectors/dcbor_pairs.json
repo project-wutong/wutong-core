@@ -1,0 +1,18 @@
+[
+  {
+    "comment": "RFC 8949 Section 4.2.1 map key ordering (length-first / bytewise encoded key order: a < b < aa)",
+    "input": {
+      "aa": 1,
+      "b": 2,
+      "a": 0,
+      "neg": -500,
+      "arr": [
+        true,
+        false,
+        null,
+        "梧桐"
+      ]
+    },
+    "dcbor_hex": "a5616100616202626161016361727284f5f4f666e6a2a7e6a190636e65673901f3"
+  }
+]

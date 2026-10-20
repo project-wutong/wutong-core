@@ -1,0 +1,13 @@
+{
+  "protocol": "wutong/0.1",
+  "kind": "wutong.revision",
+  "id": "urn:uuid:019a1111-1111-7111-8111-000000002717",
+  "occurred_at": "2026-10-18T10:00:00Z",
+  "payload": {
+    "revision_id": "urn:uuid:019a1111-1111-7111-8111-0000000002bd",
+    "object_id": "urn:uuid:019a1111-1111-7111-8111-0000000002be",
+    "content_digest": "sha256:904b9a4c6e7b228646a253df109f12fa061db2d0874d9332ac77457ebf5b0062",
+    "parents": [],
+    "author_id": "urn:uuid:019a1111-1111-7111-8111-0000000002c1"
+  }
+}

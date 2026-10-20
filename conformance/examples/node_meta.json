@@ -1,0 +1,36 @@
+{
+  "protocol": "wutong/0.1",
+  "kind": "wutong.node_meta",
+  "id": "urn:uuid:019a1111-1111-7111-8111-000000002727",
+  "occurred_at": "2026-10-18T10:00:00Z",
+  "payload": {
+    "node_id": "urn:uuid:019a1111-1111-7111-8111-0000000008fd",
+    "operator_id": "urn:uuid:019a1111-1111-7111-8111-0000000008fe",
+    "implementation": "wutong-reference/0.1.2",
+    "supported_profiles": [
+      "core",
+      "document",
+      "agent",
+      "security",
+      "sync",
+      "federation",
+      "service",
+      "interop"
+    ],
+    "supported_encodings": [
+      "application/wtp+json",
+      "application/wtp+cbor"
+    ],
+    "max_envelope_bytes": 1048576,
+    "endpoints": {
+      "base_url": "https://node.wutong.space",
+      "meta_path": "/_wutong/v0.1/meta",
+      "objects_path": "/_wutong/v0.1/objects",
+      "revisions_path": "/_wutong/v0.1/revisions",
+      "resolve_path": "/_wutong/v0.1/resolve",
+      "subscriptions_path": "/_wutong/v0.1/subscriptions",
+      "invocations_path": "/_wutong/v0.1/invocations",
+      "sync_path": "/_wutong/v0.1/sync"
+    }
+  }
+}

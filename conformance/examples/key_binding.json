@@ -1,0 +1,19 @@
+{
+  "protocol": "wutong/0.1",
+  "kind": "wutong.key_binding",
+  "id": "urn:uuid:019a1111-1111-7111-8111-000000002712",
+  "occurred_at": "2026-10-18T10:00:00Z",
+  "payload": {
+    "binding_id": "urn:uuid:019a1111-1111-7111-8111-0000000000c9",
+    "principal_id": "urn:uuid:019a1111-1111-7111-8111-0000000000ca",
+    "key_id": "local-key-01",
+    "alg": "Ed25519",
+    "public_key": "03a107bff3ce10be1d70dd18e74bc09967e4d6309ba50d5f1ddc8664125531b8",
+    "purposes": [
+      "signing",
+      "delegation"
+    ],
+    "valid_from": "2026-10-18T00:00:00Z",
+    "valid_until": "2026-10-19T00:00:00Z"
+  }
+}

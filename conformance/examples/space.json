@@ -1,0 +1,12 @@
+{
+  "protocol": "wutong/0.1",
+  "kind": "wutong.space",
+  "id": "urn:uuid:019a1111-1111-7111-8111-000000002714",
+  "occurred_at": "2026-10-18T10:00:00Z",
+  "payload": {
+    "space_id": "urn:uuid:019a1111-1111-7111-8111-000000000191",
+    "owner_id": "urn:uuid:019a1111-1111-7111-8111-000000000192",
+    "name": "Wutong Research",
+    "visibility": "local"
+  }
+}

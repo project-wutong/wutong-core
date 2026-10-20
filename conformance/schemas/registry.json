@@ -1,0 +1,87 @@
+{
+  "protocol": "wutong/0.1",
+  "version": "0.1.2",
+  "schema_id": "urn:wutong:schema:core:0.1.2",
+  "status": "formal-release",
+  "kinds": [
+    "principal",
+    "key_binding",
+    "revocation",
+    "space",
+    "space_epoch",
+    "object",
+    "revision",
+    "relation",
+    "annotation",
+    "proposal",
+    "task",
+    "capability",
+    "event",
+    "service",
+    "service_invocation",
+    "receipt",
+    "publication",
+    "external_binding",
+    "agent_manifest",
+    "artifact",
+    "sync_frame",
+    "encrypted_envelope",
+    "node_meta",
+    "subscription"
+  ],
+  "profiles": [
+    "core",
+    "document",
+    "agent",
+    "security",
+    "sync",
+    "federation",
+    "service",
+    "interop"
+  ],
+  "wire_encodings": [
+    {
+      "media_type": "application/wtp+json",
+      "canonicalization": "RFC 8785 (JCS)",
+      "signature_prefix": "WUTONG-SIG-V0.1\\x00",
+      "proof_encoding": "jcs"
+    },
+    {
+      "media_type": "application/wtp+cbor",
+      "canonicalization": "RFC 8949 Section 4.2.1 (dCBOR)",
+      "signature_prefix": "WUTONG-CBOR-SIG-V0.1\\x00",
+      "proof_encoding": "dcbor"
+    }
+  ],
+  "sync_codecs": [
+    "automerge/1",
+    "yrs/1",
+    "snapshot/1"
+  ],
+  "e2ee_suites": [
+    {
+      "kem": "X25519 (RFC 7748)",
+      "kdf": "HKDF-SHA256 (RFC 5869)",
+      "aead": "ChaCha20-Poly1305 (RFC 8439)",
+      "epoch_distribution": "wutong.space_epoch"
+    }
+  ],
+  "errors": [
+    "ERR_SCHEMA",
+    "ERR_VERSION",
+    "ERR_SIGNATURE",
+    "ERR_KEY_UNBOUND",
+    "ERR_KEY_REVOKED",
+    "ERR_REVOCATION_STALE",
+    "ERR_PERMISSION",
+    "ERR_REPLAY",
+    "ERR_EQUIVOCATION",
+    "ERR_DECRYPTION_FAILED",
+    "ERR_CONFLICT",
+    "ERR_SYMLINK_OR_TRAVERSAL",
+    "ERR_SSRF_BLOCKED",
+    "ERR_UNRESOLVED",
+    "ERR_RATE_LIMIT",
+    "ERR_UNSUPPORTED"
+  ]
+}

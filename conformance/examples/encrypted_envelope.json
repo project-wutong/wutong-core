@@ -1,0 +1,18 @@
+{
+  "protocol": "wutong/0.1",
+  "kind": "wutong.encrypted_envelope",
+  "id": "urn:uuid:019a1111-1111-7111-8111-000000002726",
+  "occurred_at": "2026-10-18T10:00:00Z",
+  "payload": {
+    "space_id": "urn:uuid:019a1111-1111-7111-8111-000000000899",
+    "epoch": 1,
+    "key_id": "local-key-01",
+    "sender_ephemeral_pub": "03a107bff3ce10be1d70dd18e74bc09967e4d6309ba50d5f1ddc8664125531b8",
+    "aead_alg": "ChaCha20-Poly1305",
+    "kdf_alg": "HKDF-SHA256",
+    "nonce_b64u": "AAAAAAAAAAAAAAAA",
+    "inner_kind": "wutong.object",
+    "aad_digest": "sha256:ae3d32542ca1d143417da2f60ef4992fb65b2b59e5dc7abe9993ed1229eb6e5f",
+    "ciphertext_b64u": "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXo"
+  }
+}

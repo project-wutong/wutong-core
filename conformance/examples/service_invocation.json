@@ -1,0 +1,14 @@
+{
+  "protocol": "wutong/0.1",
+  "kind": "wutong.service_invocation",
+  "id": "urn:uuid:019a1111-1111-7111-8111-00000000271f",
+  "occurred_at": "2026-10-18T10:00:00Z",
+  "payload": {
+    "invocation_id": "urn:uuid:019a1111-1111-7111-8111-0000000005dd",
+    "service_id": "urn:uuid:019a1111-1111-7111-8111-0000000005de",
+    "caller_id": "urn:uuid:019a1111-1111-7111-8111-0000000005df",
+    "action": "document.propose",
+    "target_ref": "urn:uuid:019a1111-1111-7111-8111-000000009999",
+    "idempotency_key": "idem-key-0001"
+  }
+}

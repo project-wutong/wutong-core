@@ -1,0 +1,70 @@
+[
+ {
+  "path": "notes/demo.md",
+  "valid": true
+ },
+ {
+  "path": "a/b/c.typ",
+  "valid": true
+ },
+ {
+  "path": "中文/笔记.md",
+  "valid": true
+ },
+ {
+  "path": "../escape.md",
+  "valid": false
+ },
+ {
+  "path": "a/../../secret",
+  "valid": false
+ },
+ {
+  "path": "/etc/passwd",
+  "valid": false
+ },
+ {
+  "path": "C:/Windows/system.ini",
+  "valid": false
+ },
+ {
+  "path": "dir\\file.md",
+  "valid": false
+ },
+ {
+  "path": "./notes.md",
+  "valid": false
+ },
+ {
+  "path": "a//b.md",
+  "valid": false
+ },
+ {
+  "path": "a/CON",
+  "valid": false
+ },
+ {
+  "path": "file.",
+  "valid": false
+ },
+ {
+  "path": "a/trailing ",
+  "valid": false
+ },
+ {
+  "path": "nul.txt",
+  "valid": false
+ },
+ {
+  "path": "LPT1",
+  "valid": false
+ },
+ {
+  "path": "com9.md",
+  "valid": false
+ },
+ {
+  "path": "",
+  "valid": false
+ }
+]

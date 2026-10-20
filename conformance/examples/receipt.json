@@ -1,0 +1,13 @@
+{
+  "protocol": "wutong/0.1",
+  "kind": "wutong.receipt",
+  "id": "urn:uuid:019a1111-1111-7111-8111-000000002720",
+  "occurred_at": "2026-10-18T10:00:00Z",
+  "payload": {
+    "receipt_id": "urn:uuid:019a1111-1111-7111-8111-000000000641",
+    "request_id": "urn:uuid:019a1111-1111-7111-8111-000000000642",
+    "request_digest": "sha256:a9a0c29a86bfcf9f107ff8c17d002189f6cc9320fd47e8d48509a628a639a19a",
+    "responder_id": "urn:uuid:019a1111-1111-7111-8111-000000000644",
+    "status": "accepted"
+  }
+}
